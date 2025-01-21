@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TETRIS</title>
   <link rel="stylesheet" href="style.css">
-  <script src="index.js"></script>
 </head>
 <body>
 <div class="container">
@@ -15,9 +14,18 @@
     <div>
       <h1>TETRIS</h1>
       <p>Score: <span id="score">0</span></p>
+      <p>High Score: <span id="high-score">0</span></p> <!-- Thêm dòng này -->
+      <label id = 'level' for="difficulty">Level:</label>
+      <select id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="normal" selected>Normal</option>
+        <option value="hard">Hard</option>
+      </select>
     </div>
-    <div id="high-score">Kỷ Lục: 0</div>
-    <button class="play-btn" id="play">Play</button>
+    <div class="buttons">
+      <button class="play-btn" id="play">Play😊</button>
+      <button id="reset">Reset🤫</button>
+    </div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

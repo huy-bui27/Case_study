@@ -3,13 +3,13 @@ const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 30;
 const COLOR_MAPPING = [
-    'red',
-    'orange',
-    'green',
-    'purple',
-    'blue',
-    'cyan',
-    'yellow',
+    '#680000',
+    '#D2691E',
+    '#66FF66',
+    '#FFFF99',
+    '#66FFFF',
+    '#990066',
+    '#FFE4E1',
     'white',
 ];
 
@@ -193,19 +193,29 @@ const ctx = canvas.getContext('2d');
 ctx.canvas.width = COLS * BLOCK_SIZE;
 ctx.canvas.height = ROWS * BLOCK_SIZE;
 
+let difficulty = 'normal'; // Mặc định là 'bình thường'
+
+const difficultySettings = {
+    easy: 1500,    // Tốc độ rơi cho mức dễ
+    normal: 1000,  // Tốc độ rơi cho mức bình thường
+    hard: 500      // Tốc độ rơi cho mức khó
+};
+
 class Board {
     constructor(ctx) {
         this.ctx = ctx;
         this.grid = this.generateWhiteBoard();
         this.score = 0;
+        this.highScore = 0; // Thêm biến lưu trữ kỷ lục
         this.gameOver = false;
         this.isPlaying = false;
 
-        this.clearAudio = new Audio('../sounds/clear.wav');
+        this.clearAudio = new Audio('./sounds/clear.wav');
     }
 
     reset() {
         this.score = 0;
+        document.getElementById('score').innerHTML = 0; // Đặt điểm số về 0
         this.grid = this.generateWhiteBoard();
         this.gameOver = false;
         this.drawBoard();
@@ -254,7 +264,6 @@ class Board {
             board.grid = [...newRows, ...latestGrid];
             this.handleScore(newScore * 10);
 
-            this.clearAudio.currentTime = 0; // Đặt lại thời gian phát âm thanh
             this.clearAudio.play();
             console.log({latestGrid});
         }
@@ -263,6 +272,11 @@ class Board {
     handleScore(newScore) {
         this.score+= newScore;
         document.getElementById('score').innerHTML = this.score;
+// //Cập nhật điểm số cao nhất
+        if (this.score > this.highScore) {
+            this.highScore = this.score;
+            document.getElementById('high-score').innerHTML = this.highScore; // Cập nhật hiển thị kỷ lục
+        }
     }
 
     handleGameOver() {
@@ -427,9 +441,14 @@ document.getElementById('play').addEventListener('click', () => {
         } else {
             clearInterval(refresh);
         }
-    }, 1000);
+    }, difficultySettings[difficulty]);// Sử dụng mức độ khó
 })
-
+document.getElementById('reset').addEventListener('click', () => {
+    board.reset(); // Reset bảng
+    brick = null; // Đặt brick thành null để tránh lỗi
+    clearInterval(refresh); // Dừng vòng lặp nếu đang chơi
+    document.getElementById('score').innerHTML = 0; // Đặt điểm số về 0
+});
 
 document.addEventListener('keydown', (e) => {
     if (!board.gameOver && board.isPlaying) {
@@ -452,6 +471,7 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
 // brick.moveLeft();
 // brick.moveDown();
 // brick.moveRight();
